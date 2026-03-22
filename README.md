@@ -1,9 +1,8 @@
-# Velox-Trade
-Indian Stock Market Intelligence Dashboard
 # 📈 VeloxTrade — Indian Stock Market Dashboard
 
 A real-time Nifty 50 stock dashboard built with Vanilla HTML, CSS & JavaScript.
 
+🔗 [Live Demo](https://yourusername.github.io/veloxtrade)
 
 ---
 
@@ -36,6 +35,15 @@ veloxtrade/
 └── watchlist.js
 ```
 
+---
+
+## 🚀 How to Run
+1. Clone the repo
+2. Get a free API key from [twelvedata.com](https://twelvedata.com)
+3. Add your key in `api.js`
+4. Open `index.html` in your browser
+
+---
 
 ## 👨‍💻 Author
-**Your Name** — [@yourusername](https://github.com/yourusername)
+**Vansh chaturvedi** — [@vanshgit1111](https://github.com/vanshgit1111)
