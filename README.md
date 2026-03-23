@@ -2,7 +2,6 @@
 
 A real-time Nifty 50 stock dashboard built with Vanilla HTML, CSS & JavaScript.
 
-🔗 [Live Demo](https://yourusername.github.io/veloxtrade)
 
 ---
 
