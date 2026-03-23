@@ -13,13 +13,13 @@ A real-time Nifty 50 stock dashboard built with Vanilla HTML, CSS & JavaScript.
 ---
 
 ## ✨ Features
-- 📊 Live Nifty 50 stock cards with ₹ prices and % change
-- 🧠 Market Mood Indicator — Fear / Neutral / Greed
-- 🔍 Search, Filter and Sort stocks using Array HOFs
-- ❤️ Personal Watchlist with virtual portfolio value
-- 📰 Latest Indian market news
-- 🌙 Dark / Light mode toggle
-- 📱 Fully responsive — mobile, tablet, desktop
+-  Live Nifty 50 stock cards with ₹ prices and % change
+-  Market Mood Indicator — Fear / Neutral / Greed
+-  Search, Filter and Sort stocks using Array HOFs
+-  Personal Watchlist with virtual portfolio value
+-  Latest Indian market news
+-  Dark / Light mode toggle
+-  Fully responsive — mobile, tablet, desktop
 
 ---
 
@@ -43,6 +43,6 @@ veloxtrade/
 4. Open `index.html` in your browser
 
 ---
-
-## 👨‍💻 Author
+Explore the app and enjoy trading
+## 👨‍💻 AuthorE
 **Vansh chaturvedi** — [@vanshgit1111](https://github.com/vanshgit1111)
