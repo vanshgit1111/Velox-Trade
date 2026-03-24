@@ -43,6 +43,6 @@ veloxtrade/
 4. Open `index.html` in your browser
 
 ---
-Explore the app and enjoy trading
+Explore the app and enjoy trading insights
 ## 👨‍💻 AuthorE
 **Vansh chaturvedi** — [@vanshgit1111](https://github.com/vanshgit1111)
