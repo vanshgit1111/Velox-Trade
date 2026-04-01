@@ -43,5 +43,7 @@ veloxtrade/
 4. Open `index.html` in your browser
 
 ---
+Milestone 1 and 2 completed
+
 Explore the app and enjoy trading insights
 **Vansh chaturvedi** — [@vanshgit1111](https://github.com/vanshgit1111)
