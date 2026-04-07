@@ -13,7 +13,7 @@ A real-time Nifty 50 stock dashboard built with Vanilla HTML, CSS & JavaScript.
 ---
 
 ## ✨ Features
--  Live Nifty 50 stock cards with ₹ prices and % change
+-  Live stock cards with ₹ prices and % change
 -  Market Mood Indicator — Fear / Neutral / Greed
 -  Search, Filter and Sort stocks using Array HOFs
 -  Personal Watchlist with virtual portfolio value
