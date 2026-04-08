@@ -1,4 +1,5 @@
-const api_key = "d8678aab24864d44af4d6b2520712cc3"
+// Load API key from environment variable
+const api_key = process.env.TWELVEDATA_API_KEY || ''
 
 const STOCKS = [
     { ticker: 'AAPL', name: 'Apple Inc.', sector: 'IT' },
