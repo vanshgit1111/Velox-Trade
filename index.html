@@ -1,19 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Stock Search App</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Velox Trade</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <div class="container">
-    <h1>VeloxTrade — Indian Stock Market Dashboard</h1>
-    <input id="symbolInput" placeholder="Enter symbol eg: AAPL, GOOGL, MSFT" />
-    <button onclick="searchStock()">Search</button>
-    <div id="result"></div>
-  </div>
-
-  <script src="script.js"></script>
+    <nav class="navbar">
+        <div class="logo">Velox trader</div>
+        <div class="nav-right">
+            <button id="theme-toggle">Dark Mode</button>
+        </div>
+    </nav>
+    <div class="controls">
+        <input type="text" id="search-input" placeholder="Search stocks">
+        <select id="sector-filter">
+            <option value="All">All Sectors</option>
+            <option value="IT">IT</option>
+            <option value="Energy">Energy</option>
+            <option value="Banking">Banking</option>
+        </select>
+        <select id="sort-select">
+            <option value="name">Sort by Name</option>
+            <option value="price-asc">Price Low to High</option>
+            <option value="price-desc">Price High to Low</option>
+        </select>
+    </div>
+    
+    <div class="dashboard-layout">
+        <div class="left-col">
+            <div class="mood-section">
+                <h3>Market Mood</h3>
+                <canvas id="mood-chart" width="200" height="150"></canvas>
+                <h2 id="mood-label" style="text-align:center;">Loading...</h2>
+            </div>
+            
+            <div class="news-section">
+                <h3>Indian Market News</h3>
+                <div id="news-feed"></div>
+            </div>
+            
+            <div class="watchlist-section">
+                <h3>My Watchlist</h3>
+                <h4 id="portfolio-value">Portfolio Value: ₹0.00</h4>
+                <div id="watchlist-grid"></div>
+            </div>
+        </div>
+        
+        <div class="right-col">
+            <div id="stock-grid" class="grid"></div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="api.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
