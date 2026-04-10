@@ -1,24 +1,48 @@
- 📈 VeloxTrade — Indian Stock Market Dashboard
+# 📈 VeloxTrade — Stock Market Intelligence Dashboard
 
-A real stock dashboard built with Vanilla HTML, CSS & JavaScript.
+A real-time stock market dashboard built with Vanilla HTML, CSS & JavaScript.
+
+🔗 [Live Demo](https://velox-trade.vercel.app/)
 
 ---
 
 ## 🛠️ Tech Stack
 - HTML, CSS, Vanilla JavaScript
-- Twelve Data API (live NSE stock data)
+- Twelve Data API (live stock data)
 - Chart.js (mood gauge + price charts)
 
 ---
 
 ## ✨ Features
-- Live stock cards with prices and % change
-- Market Mood Indicator — Fear / Neutral / Greed
-- Search, Filter and Sort stocks using Array HOFs
-- Personal Watchlist with virtual portfolio value
-- Latest Indian market news
-- Dark / Light mode toggle
-- Fully responsive — mobile, tablet, desktop
+-  Live stock cards with prices and % change
+-  Market Mood Indicator — Fear / Neutral / Greed
+-  Search, Filter and Sort stocks using Array HOFs
+-  Personal Watchlist with virtual portfolio value
+-  Latest market news
+-  Dark / Light mode toggle
+-  Fully responsive — mobile, tablet, desktop
+
+---
+
+## ⚠️ Known Limitations
+
+- **API Restrictions** — Twelve Data's free tier does not fully support
+  Indian NSE stocks, so some data is fetched from US markets instead
+- **Limited Stocks** — Free plan restricts the number of stocks that
+  can be fetched in a single API call
+- **Slow Load Time** — API calls take a few seconds to respond on the
+  free tier, so a small delay on page load is expected
+
+---
+
+## 📂 Project Structure
+Velox-Trade/
+├── index.html
+├── style.css
+├── app.js
+├── api.js
+├── ui.js
+└── watchlist.js
 
 ---
 
@@ -31,4 +55,4 @@ A real stock dashboard built with Vanilla HTML, CSS & JavaScript.
 ---
 
 ## 👨‍💻 Author
-**Your Name** — [@vanshgit1111]([https://github.com/yourusername](https://github.com/vanshgit1111))
+**Vansh Chaturvedi** — [@vanshgit1111](https://github.com/vanshgit1111)
