@@ -1,28 +1,51 @@
-// Load API key from environment variable
-const api_key = process.env.TWELVEDATA_API_KEY || ''
 
-const STOCKS = [
-    { ticker: 'AAPL', name: 'Apple Inc.', sector: 'IT' },
-    { ticker: 'MSFT', name: 'Microsoft', sector: 'IT' },
-    { ticker: 'GOOG', name: 'Alphabet', sector: 'IT' },
-    { ticker: 'XOM', name: 'ExxonMobil', sector: 'Energy' },
-    { ticker: 'CVX', name: 'Chevron', sector: 'Energy' },
-    { ticker: 'JPM', name: 'JPMorgan', sector: 'Banking' },
-    { ticker: 'BAC', name: 'Bank of America', sector: 'Banking' },
-    { ticker: 'WFC', name: 'Wells Fargo', sector: 'Banking' }
-]
+var myApiKey = "";
+var newsKey = "";
 
-async function fetchAllStocks() {
-    const symbols = STOCKS.map(stock => stock.ticker).join(',')
-    const url = `https://api.twelvedata.com/quote?symbol=${symbols}&apikey=${api_key}`
-    const response = await fetch(url)
-    const data = await response.json()
-    return data
+if (typeof CONFIG !== "undefined") {
+    myApiKey = CONFIG.TWELVEDATA_API_KEY;
+    newsKey = CONFIG.FINNHUB_API_KEY;
 }
 
-async function fetchNews() {
-    const url = `https://api.rss2json.com/v1/api.json?rss_url=https://economictimes.indiatimes.com/markets/rssfeeds/2146842.cms`
-    const response = await fetch(url)
-    const data = await response.json()
-    return data.items || []
+var stockList = [
+    { ticker: "AAPL", name: "Apple Inc.", sector: "IT" },
+    { ticker: "MSFT", name: "Microsoft", sector: "IT" },
+    { ticker: "GOOG", name: "Alphabet", sector: "IT" },
+    { ticker: "XOM", name: "ExxonMobil", sector: "Energy" },
+    { ticker: "CVX", name: "Chevron", sector: "Energy" },
+    { ticker: "JPM", name: "JPMorgan", sector: "Banking" },
+    { ticker: "BAC", name: "Bank of America", sector: "Banking" },
+    { ticker: "WFC", name: "Wells Fargo", sector: "Banking" }
+];
+
+async function getStockData() {
+    var tickers = "";
+    for (var i = 0; i < stockList.length; i++) {
+        tickers += stockList[i].ticker;
+        if (i < stockList.length - 1) {
+            tickers += ",";
+        }
+    }
+    var url = "https://api.twelvedata.com/quote?symbol=" + tickers + "&apikey=" + myApiKey;
+    var response = await fetch(url);
+    var data = await response.json();
+    return data;
+}
+
+async function getNews() {
+    var url = "https://finnhub.io/api/v1/news?category=general&token=" + newsKey;
+    var response = await fetch(url, { cache: "no-store" });
+    var data = await response.json();
+
+    if (!Array.isArray(data) || data.length === 0) {
+        return [];
+    }
+    var shuffled = data.slice();
+    for (var i = shuffled.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = shuffled[i];
+        shuffled[i] = shuffled[j];
+        shuffled[j] = temp;
+    }
+    return shuffled.slice(0, 5);
 }

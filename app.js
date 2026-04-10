@@ -1,58 +1,58 @@
-const themeToggleBtn = document.getElementById('theme-toggle')
-const searchInput = document.getElementById('search-input')
-const sectorFilter = document.getElementById('sector-filter')
-const sortSelect = document.getElementById('sort-select')
-const stockGrid = document.getElementById('stock-grid')
 
-let stockDataArray = []
-let watchlist = []
-let chartInstance = null
+var modeBtn = document.getElementById("mode-btn");
+var searchBox = document.getElementById("search-box");
+var sectorDropdown = document.getElementById("sector-dropdown");
+var sortDropdown = document.getElementById("sort-dropdown");
+var cardsContainer = document.getElementById("cards-container");
 
-themeToggleBtn.addEventListener('click', () => {
-    document.body.classList.toggle('dark-mode')
-    if (document.body.classList.contains('dark-mode')) {
-        themeToggleBtn.textContent = 'Light Mode'
+var allStocks = [];
+var myWatchlist = [];
+var myChart = null;
+modeBtn.addEventListener("click", function () {
+    document.body.classList.toggle("dark-mode");
+    if (document.body.classList.contains("dark-mode")) {
+        modeBtn.textContent = "Light Mode";
     } else {
-        themeToggleBtn.textContent = 'Dark Mode'
+        modeBtn.textContent = "Dark Mode";
     }
-})
+});
 
-function renderMoodGauge(dataArray) {
-    const totalChange = dataArray.reduce((acc, stock) => acc + parseFloat(stock.change), 0)
-    const avgChange = totalChange / dataArray.length
-    
-    let mood = 'Neutral'
-    let color = '#aaaaaa' // gray for neutral
-    
-    if (avgChange > 0.5) {
-        mood = 'Greed'
-        color = '#008800' // explicitly hardcode green match
-    } else if (avgChange < -0.5) {
-        mood = 'Fear'
-        color = '#cc0000' // explicitly hardcode red match
+function showMoodGauge(stocks) {
+    var total = 0;
+    for (var i = 0; i < stocks.length; i++) {
+        total = total + parseFloat(stocks[i].change);
     }
+    var avg = total / stocks.length;
 
-    document.getElementById('mood-label').textContent = mood
+    var mood = "Neutral";
+    var moodColor = "#aaaaaa";
 
-    // Map avgChange from a basic -2% to 2% scale into a 0 to 100 score for pie slice sizing
-    let score = ((avgChange + 2) / 4) * 100
-    if (score < 5) score = 5
-    if (score > 100) score = 100
-    
-    const remaining = 100 - score
-
-    const ctx = document.getElementById('mood-chart')
-    if (chartInstance) {
-        chartInstance.destroy()
+    if (avg > 0.5) {
+        mood = "Greed";
+        moodColor = "#008800";
+    } else if (avg < -0.5) {
+        mood = "Fear";
+        moodColor = "#cc0000";
     }
 
-    chartInstance = new Chart(ctx, {
-        type: 'doughnut',
+    document.getElementById("mood-text").textContent = mood;
+    var score = ((avg + 2) / 4) * 100;
+    if (score < 5) score = 5;
+    if (score > 100) score = 100;
+    var leftover = 100 - score;
+
+    var canvas = document.getElementById("mood-chart");
+    if (myChart) {
+        myChart.destroy();
+    }
+
+    myChart = new Chart(canvas, {
+        type: "doughnut",
         data: {
-            labels: ['Score', 'Remaining'],
+            labels: ["Score", "Rest"],
             datasets: [{
-                data: [score, remaining], 
-                backgroundColor: [color, '#dddddd'],
+                data: [score, leftover],
+                backgroundColor: [moodColor, "#dddddd"],
                 borderWidth: 0
             }]
         },
@@ -64,176 +64,231 @@ function renderMoodGauge(dataArray) {
                 tooltip: { enabled: false }
             }
         }
-    })
+    });
 }
+function showWatchlist() {
+    var area = document.getElementById("watchlist-area");
+    var valueLabel = document.getElementById("total-value");
 
-function renderWatchlist() {
-    const listGrid = document.getElementById('watchlist-grid')
-    const portfolioLabel = document.getElementById('portfolio-value')
-    
-    listGrid.innerHTML = ''
-    
-    const totalVal = watchlist.reduce((acc, item) => acc + parseFloat(item.price), 0)
-    portfolioLabel.textContent = `Portfolio Value: ₹${totalVal.toFixed(2)}`
-    
-    watchlist.map(item => {
-        const div = document.createElement('div')
-        div.className = 'watchlist-card'
-        
-        const text = document.createElement('span')
-        text.textContent = `${item.ticker} - ₹${item.price}`
-        
-        const remBtn = document.createElement('button')
-        remBtn.textContent = 'x'
-        remBtn.addEventListener('click', () => {
-            watchlist = watchlist.filter(w => w.ticker !== item.ticker)
-            processData()
-            renderWatchlist()
-        })
-        
-        div.appendChild(text)
-        div.appendChild(remBtn)
-        listGrid.appendChild(div)
-    })
+    area.innerHTML = "";
+    var total = 0;
+    for (var i = 0; i < myWatchlist.length; i++) {
+        total = total + parseFloat(myWatchlist[i].price);
+    }
+    valueLabel.textContent = "Portfolio Value: ₹" + total.toFixed(2);
+    for (var i = 0; i < myWatchlist.length; i++) {
+        var item = myWatchlist[i];
+
+        var div = document.createElement("div");
+        div.className = "watchlist-item";
+
+        var txt = document.createElement("span");
+        txt.textContent = item.ticker + " - ₹" + item.price;
+
+        var removeBtn = document.createElement("button");
+        removeBtn.textContent = "x";
+        removeBtn.setAttribute("data-ticker", item.ticker);
+        removeBtn.addEventListener("click", function () {
+            var tickerToRemove = this.getAttribute("data-ticker");
+            var newList = [];
+            for (var j = 0; j < myWatchlist.length; j++) {
+                if (myWatchlist[j].ticker !== tickerToRemove) {
+                    newList.push(myWatchlist[j]);
+                }
+            }
+            myWatchlist = newList;
+            filterAndShow();
+            showWatchlist();
+        });
+
+        div.appendChild(txt);
+        div.appendChild(removeBtn);
+        area.appendChild(div);
+    }
 }
+function showStockCards(stocks) {
+    cardsContainer.innerHTML = "";
 
-function renderStocks(dataArray) {
-    stockGrid.innerHTML = ''
-    dataArray.map(stock => {
-        const card = document.createElement('div')
-        card.className = 'card'
-        
-        const title = document.createElement('h3')
-        title.textContent = stock.name
-        
-        const symbol = document.createElement('p')
-        symbol.textContent = stock.ticker
-        
-        const price = document.createElement('div')
-        price.className = 'stock-price'
-        price.textContent = `₹${stock.price}`
-        
-        const change = document.createElement('div')
-        change.className = 'stock-change'
-        const changeVal = parseFloat(stock.change).toFixed(2)
-        
-        if (changeVal > 0) {
-            change.textContent = `+${changeVal}%`
-            change.classList.add('green-text')
+    for (var i = 0; i < stocks.length; i++) {
+        var stock = stocks[i];
+
+        var card = document.createElement("div");
+        card.className = "card";
+        var heading = document.createElement("h3");
+        var nameSpan = document.createElement("span");
+        nameSpan.textContent = stock.name;
+        nameSpan.className = "stock-name";
+        var tickerSpan = document.createElement("span");
+        tickerSpan.textContent = stock.ticker;
+        tickerSpan.className = "ticker-label";
+        heading.appendChild(nameSpan);
+        heading.appendChild(tickerSpan);
+
+      
+        var priceDiv = document.createElement("div");
+        priceDiv.className = "price";
+        priceDiv.textContent = "₹" + stock.price;
+
+
+        var changeDiv = document.createElement("div");
+        changeDiv.className = "change";
+        var changeNum = parseFloat(stock.change).toFixed(2);
+        if (changeNum > 0) {
+            changeDiv.textContent = "+" + changeNum + "%";
+            changeDiv.classList.add("green");
         } else {
-            change.textContent = `${changeVal}%`
-            change.classList.add('red-text')
+            changeDiv.textContent = changeNum + "%";
+            changeDiv.classList.add("red");
         }
+
+        var sectorDiv = document.createElement("div");
+        sectorDiv.className = "sector-tag";
+        sectorDiv.textContent = stock.sector;
+
         
-        const sector = document.createElement('div')
-        sector.className = 'stock-sector'
-        sector.textContent = stock.sector
-        
-        const isFav = watchlist.find(w => w.ticker === stock.ticker)
-        
-        const favBtn = document.createElement('button')
-        if (isFav) {
-            favBtn.textContent = 'Remove'
-            favBtn.className = 'fav-btn favorited'
+        var isInWatchlist = false;
+        for (var j = 0; j < myWatchlist.length; j++) {
+            if (myWatchlist[j].ticker === stock.ticker) {
+                isInWatchlist = true;
+                break;
+            }
+        }
+
+        var btn = document.createElement("button");
+        btn.className = "add-btn";
+        if (isInWatchlist) {
+            btn.textContent = "Remove";
+            btn.classList.add("remove");
         } else {
-            favBtn.textContent = 'Add to Watchlist'
-            favBtn.className = 'fav-btn'
+            btn.textContent = "Add to Watchlist";
         }
-        
-        favBtn.addEventListener('click', () => {
-            if (isFav) {
-                watchlist = watchlist.filter(w => w.ticker !== stock.ticker)
+
+        btn.setAttribute("data-ticker", stock.ticker);
+        btn.setAttribute("data-price", stock.price);
+        btn.addEventListener("click", function () {
+            var t = this.getAttribute("data-ticker");
+            var p = this.getAttribute("data-price");
+
+
+            var found = false;
+            for (var k = 0; k < myWatchlist.length; k++) {
+                if (myWatchlist[k].ticker === t) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found) {
+                var newList = [];
+                for (var k = 0; k < myWatchlist.length; k++) {
+                    if (myWatchlist[k].ticker !== t) {
+                        newList.push(myWatchlist[k]);
+                    }
+                }
+                myWatchlist = newList;
             } else {
-                watchlist = [...watchlist, { ticker: stock.ticker, price: stock.price }]
+                myWatchlist.push({ ticker: t, price: p });
             }
-            renderWatchlist()
-            processData()
-        })
-        
-        card.appendChild(title)
-        card.appendChild(symbol)
-        card.appendChild(price)
-        card.appendChild(change)
-        card.appendChild(sector)
-        card.appendChild(favBtn)
-        
-        stockGrid.appendChild(card)
-    })
-}
+            showWatchlist();
+            filterAndShow();
+        });
 
-function processData() {
-    let filteredData = stockDataArray.filter(stock => {
-        const searchVal = searchInput.value.toLowerCase()
-        const matchName = stock.name.toLowerCase().includes(searchVal)
-        const matchTicker = stock.ticker.toLowerCase().includes(searchVal)
-        const matchSector = sectorFilter.value === 'All' || stock.sector === sectorFilter.value
-        return (matchName || matchTicker) && matchSector
-    })
+        card.appendChild(heading);
+        card.appendChild(priceDiv);
+        card.appendChild(changeDiv);
+        card.appendChild(sectorDiv);
+        card.appendChild(btn);
 
-    filteredData = filteredData.sort((a, b) => {
-        if (sortSelect.value === 'name') {
-            return a.name.localeCompare(b.name)
-        }
-        if (sortSelect.value === 'price-asc') {
-            return parseFloat(a.price) - parseFloat(b.price)
-        }
-        if (sortSelect.value === 'price-desc') {
-            return parseFloat(b.price) - parseFloat(a.price)
-        }
-        return 0
-    })
-
-    renderStocks(filteredData)
-}
-
-searchInput.addEventListener('input', processData)
-sectorFilter.addEventListener('change', processData)
-sortSelect.addEventListener('change', processData)
-
-async function startApp() {
-    try {
-        const data = await fetchAllStocks()
-        const newsItems = await fetchNews()
-        
-        const newsContainer = document.getElementById('news-feed')
-        newsItems.slice(0, 5).map(article => {
-            const div = document.createElement('div')
-            div.className = 'news-item'
-            
-            const title = document.createElement('a')
-            title.href = article.link
-            title.target = "_blank"
-            title.textContent = article.title
-            
-            div.appendChild(title)
-            newsContainer.appendChild(div)
-        })
-        
-        stockDataArray = STOCKS.map(stock => {
-            const apiStockData = data[stock.ticker]
-            let currentPrice = '0.00'
-            let percentChange = '0.00'
-            
-            if (apiStockData && apiStockData.close) {
-                currentPrice = apiStockData.close
-                percentChange = apiStockData.percent_change
-            }
-            
-            return {
-                ticker: stock.ticker,
-                name: stock.name,
-                sector: stock.sector,
-                price: parseFloat(currentPrice).toFixed(2),
-                change: parseFloat(percentChange).toFixed(2)
-            }
-        })
-        
-        renderMoodGauge(stockDataArray)
-        processData()
-    } catch (error) {
-        stockGrid.innerHTML = '<p>Error loading data.</p>'
-        console.error(error)
+        cardsContainer.appendChild(card);
     }
 }
 
-startApp()
+
+function filterAndShow() {
+    var searchText = searchBox.value.toLowerCase();
+    var sectorVal = sectorDropdown.value;
+    var sortVal = sortDropdown.value;
+    var filtered = [];
+    for (var i = 0; i < allStocks.length; i++) {
+        var s = allStocks[i];
+        var nameMatch = s.name.toLowerCase().indexOf(searchText) !== -1;
+        var tickerMatch = s.ticker.toLowerCase().indexOf(searchText) !== -1;
+        var sectorMatch = (sectorVal === "All") || (s.sector === sectorVal);
+
+        if ((nameMatch || tickerMatch) && sectorMatch) {
+            filtered.push(s);
+        }
+    }
+    if (sortVal === "name") {
+        filtered.sort(function (a, b) {
+            if (a.name < b.name) return -1;
+            if (a.name > b.name) return 1;
+            return 0;
+        });
+    } else if (sortVal === "price-low") {
+        filtered.sort(function (a, b) {
+            return parseFloat(a.price) - parseFloat(b.price);
+        });
+    } else if (sortVal === "price-high") {
+        filtered.sort(function (a, b) {
+            return parseFloat(b.price) - parseFloat(a.price);
+        });
+    }
+
+    showStockCards(filtered);
+}
+
+
+searchBox.addEventListener("input", filterAndShow);
+sectorDropdown.addEventListener("change", filterAndShow);
+sortDropdown.addEventListener("change", filterAndShow);
+async function startApp() {
+    try {
+        var data = await getStockData();
+        var news = await getNews();
+        var newsArea = document.getElementById("news-list");
+        newsArea.innerHTML = "";
+        for (var i = 0; i < news.length && i < 5; i++) {
+            var newsDiv = document.createElement("div");
+            newsDiv.className = "news-item";
+
+            var link = document.createElement("a");
+            link.href = news[i].url;
+            link.target = "_blank";
+            link.textContent = news[i].headline;
+
+            newsDiv.appendChild(link);
+            newsArea.appendChild(newsDiv);
+        }
+
+
+        allStocks = [];
+        for (var i = 0; i < stockList.length; i++) {
+            var s = stockList[i];
+            var apiData = data[s.ticker];
+            var currentPrice = "0.00";
+            var changePercent = "0.00";
+
+            if (apiData && apiData.close) {
+                currentPrice = apiData.close;
+                changePercent = apiData.percent_change;
+            }
+
+            allStocks.push({
+                ticker: s.ticker,
+                name: s.name,
+                sector: s.sector,
+                price: parseFloat(currentPrice).toFixed(2),
+                change: parseFloat(changePercent).toFixed(2)
+            });
+        }
+
+        showMoodGauge(allStocks);
+        filterAndShow();
+    } catch (err) {
+        cardsContainer.innerHTML = "<p>Error loading data. Check console.</p>";
+        console.log("Error:", err);
+    }
+}
+
+startApp();

@@ -7,53 +7,53 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">Velox trader</div>
-        <div class="nav-right">
-            <button id="theme-toggle">Dark Mode</button>
-        </div>
-    </nav>
-    <div class="controls">
-        <input type="text" id="search-input" placeholder="Search stocks">
-        <select id="sector-filter">
+    <div class="top-bar">
+        <span class="title">Velox Trade</span>
+        <button id="mode-btn">Dark Mode</button>
+    </div>
+
+    <div class="filters">
+        <input type="text" id="search-box" placeholder="Search stocks...">
+        <select id="sector-dropdown">
             <option value="All">All Sectors</option>
             <option value="IT">IT</option>
             <option value="Energy">Energy</option>
             <option value="Banking">Banking</option>
         </select>
-        <select id="sort-select">
+        <select id="sort-dropdown">
             <option value="name">Sort by Name</option>
-            <option value="price-asc">Price Low to High</option>
-            <option value="price-desc">Price High to Low</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
         </select>
     </div>
-    
-    <div class="dashboard-layout">
-        <div class="left-col">
-            <div class="mood-section">
+
+    <div class="main-area">
+        <div class="sidebar">
+            <div class="box">
                 <h3>Market Mood</h3>
                 <canvas id="mood-chart" width="200" height="150"></canvas>
-                <h2 id="mood-label" style="text-align:center;">Loading...</h2>
+                <h2 id="mood-text" style="text-align:center;">Loading...</h2>
             </div>
-            
-            <div class="news-section">
-                <h3>Indian Market News</h3>
-                <div id="news-feed"></div>
+
+            <div class="box">
+                <h3>News</h3>
+                <div id="news-list"></div>
             </div>
-            
-            <div class="watchlist-section">
+
+            <div class="box">
                 <h3>My Watchlist</h3>
-                <h4 id="portfolio-value">Portfolio Value: ₹0.00</h4>
-                <div id="watchlist-grid"></div>
+                <h4 id="total-value">Portfolio Value: ₹0.00</h4>
+                <div id="watchlist-area"></div>
             </div>
         </div>
-        
-        <div class="right-col">
-            <div id="stock-grid" class="grid"></div>
+
+        <div class="content">
+            <div id="cards-container" class="cards"></div>
         </div>
     </div>
-    
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="config.js"></script>
     <script src="api.js"></script>
     <script src="app.js"></script>
 </body>
