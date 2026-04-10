@@ -2,7 +2,7 @@
 
 A real-time stock market dashboard built with Vanilla HTML, CSS & JavaScript.
 
-🔗 [Live Demo](https://velox-trade.vercel.app/)
+🔗 [Live Demo](https://velox-flax.vercel.app/)
 
 ---
 
